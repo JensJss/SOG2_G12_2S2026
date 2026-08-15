@@ -31,24 +31,24 @@ El analisis revela que el navegador mas preferido es el 0, mientras que el menos
 
 ## Segmentacion de Clientes
 ### Por Edad
-| grupo_edad    |   monto_compra |
-|:--------------|---------------:|
-| Menores de 18 |        17847   |
-| 19-35         |       108054   |
-| 36-50         |       102629   |
-| Mayores de 50 |        30086.2 |
+| grupo_edad    |   total_ventas |   promedio_venta |   total_compras |
+|:--------------|---------------:|-----------------:|----------------:|
+| Menores de 18 |        17847   |          38.3806 |            2557 |
+| 19-35         |       108054   |          39.5801 |           14245 |
+| 36-50         |       102629   |          40.2152 |           12769 |
+| Mayores de 50 |        30086.2 |          39.9551 |            3514 |
 ### Por Genero
-|   id_genero |   monto_compra |
-|------------:|---------------:|
-|           0 |         133861 |
-|           1 |         124755 |
+|   id_genero |   total_ventas |   promedio_venta |   total_compras |
+|------------:|---------------:|-----------------:|----------------:|
+|           0 |         133861 |          39.6979 |           17176 |
+|           1 |         124755 |          39.8832 |           15909 |
 ### Por Uso de Promociones (Boletin, Vale)
-| boletin   | vale   |   monto_compra |
-|:----------|:-------|---------------:|
-| False     | False  |       119999   |
-| False     | True   |        19323.2 |
-| True      | False  |        82246.2 |
-| True      | True   |        37047.6 |
+| boletin   | vale   |   total_ventas |   promedio_venta |   total_compras |
+|:----------|:-------|---------------:|-----------------:|----------------:|
+| False     | False  |       119999   |          38.2649 |           14425 |
+| False     | True   |        19323.2 |          43.6189 |            1899 |
+| True      | False  |        82246.2 |          38.9793 |           12135 |
+| True      | True   |        37047.6 |          45.6814 |            4626 |
 
 ## Proceso de Analisis (Para el Informe Final)
 ### Decisiones tomadas durante el analisis exploratorio
@@ -68,7 +68,7 @@ A continuacion se presentan las graficas para el analisis exploratorio:
 
 ### 1. Ventas por Mes
 ![Ventas por Mes](ventas_por_mes.png)
-*Explicacion*: Se observa la distribucion del monto total de compras agrupadas por mes, permitiendo identificar claramente los picos de ventas durante el aÃ±o.
+*Explicacion*: Se observa la distribucion del monto total de compras agrupadas por mes, permitiendo identificar claramente los picos de ventas durante el año.
 
 ### 2. Ventas por Metodo de Pago
 ![Ventas por Metodo de Pago](ventas_por_metodo_pago.png)
