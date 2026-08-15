@@ -65,9 +65,23 @@ def EjecutarAnalisisDescriptivo():
     MesMasVales = UsoValesMensual.loc[UsoValesMensual['vale'].idxmax()]
     
     DfCompleto['grupo_edad'] = pd.cut(DfCompleto['edad'], bins=[0, 18, 35, 50, 100], labels=['Menores de 18', '19-35', '36-50', 'Mayores de 50'])
-    ComprasPorEdad = DfCompleto.groupby('grupo_edad', observed=False)['monto_compra'].sum().reset_index()
-    ComprasPorGenero = DfCompleto.groupby('id_genero')['monto_compra'].sum().reset_index()
-    ComprasConPromociones = DfCompleto.groupby(['boletin', 'vale'])['monto_compra'].sum().reset_index()
+    ComprasPorEdad = DfCompleto.groupby('grupo_edad', observed=False).agg(
+        total_ventas=('monto_compra', 'sum'),
+        promedio_venta=('monto_compra', 'mean'),
+        total_compras=('n_compras', 'sum')
+    ).reset_index()
+    
+    ComprasPorGenero = DfCompleto.groupby('id_genero').agg(
+        total_ventas=('monto_compra', 'sum'),
+        promedio_venta=('monto_compra', 'mean'),
+        total_compras=('n_compras', 'sum')
+    ).reset_index()
+    
+    ComprasConPromociones = DfCompleto.groupby(['boletin', 'vale']).agg(
+        total_ventas=('monto_compra', 'sum'),
+        promedio_venta=('monto_compra', 'mean'),
+        total_compras=('n_compras', 'sum')
+    ).reset_index()
     
     plt.figure(figsize=(10, 6))
     sns.barplot(data=VentasPorMes, x='mes_compra', y='monto_compra')
