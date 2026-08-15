@@ -16,5 +16,22 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  ia-agent:
+    build:
+      context: ./servidor
+      dockerfile: Dockerfile
+    container_name: servidor-ia-mcp
+    volumes:
+      - ./servidor:/app
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
 volumes:
   postgres_data:
+
