@@ -253,19 +253,19 @@ python data_quality_report.py --out reporte_calidad.md
 > recientes con `pip install -U pandas SQLAlchemy psycopg2-binary python-dotenv`.
 
 ```powershell
+cd etl
 # 1. Crear el entorno virtual
 python -m venv .venv
 
 # 2. Activarlo
-.venv\Scripts\Activate.ps1
-# (si PowerShell bloquea el script: Set-ExecutionPolicy -Scope Process RemoteSigned)
+.venv\Scripts\Activate
+
 
 # 3. Instalar dependencias
-pip install -r etl\requirements.txt
+pip install -r requirements.txt
 
-# 4. Configurar credenciales
-copy etl\.env.example etl\.env
-notepad etl\.env      # llenar host, usuario, password, etc.
+# 4. Configurar credenciales, copiar de .env.example
+
 
 # 5. Colocar el archivo "Venta_online_c.csv" dentro de la carpeta etl\
 #    (junto a etl.py). El script lo detecta automaticamente.
