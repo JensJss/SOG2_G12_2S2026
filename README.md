@@ -34,4 +34,4 @@
 
 ## Practicas
 
-- **Practica 1 — Proximamente**
+- **Practica 1 — **
