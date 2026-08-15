@@ -1,0 +1,7 @@
+google-adk
+python-dotenv
+sqlalchemy
+psycopg2-binary
+matplotlib
+seaborn
+pandas
