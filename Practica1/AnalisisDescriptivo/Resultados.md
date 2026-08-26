@@ -4,13 +4,18 @@
 El analisis revela que el navegador mas preferido es el 0, mientras que el menos popular es el 4. Las mayores ventas ocurren en el mes 3.0 y las menores en el mes 11.0. En cuanto a las promociones, los boletines tuvieron su mayor uso en el mes 12, y los vales en el mes 3. Se nota que los jovenes (19-35) y adultos (36-50) concentran el mayor volumen de compras, con poca diferencia entre generos.
 
 ## Estadisticas Basicas
-| Variable     |    Media |   Mediana |    Moda |
-|:-------------|---------:|----------:|--------:|
-| edad         |  36.3052 |    36     |  18     |
-| venta_total  | 206.242  |   137.35  |  98     |
-| n_compras    |   5.09   |     4     |   2     |
-| monto_compra |  39.7871 |    35.764 |  37.145 |
-| tiempo_sitio | 767.376  |   768     | 852     |
+| Variable                  |      Media |   Mediana |    Moda |
+|:--------------------------|-----------:|----------:|--------:|
+| Edad                      |  36.3052   |    36     |  18     |
+| Venta total (Q)           | 206.242    |   137.35  |  98     |
+| Numero de compras         |   5.09     |     4     |   2     |
+| Monto de compra (Q)       |  39.7871   |    35.764 |  37.145 |
+| Tiempo en el sitio (seg.) | 767.376    |   768     | 852     |
+| Genero                    |   0.481231 |     0     |   0     |
+| Metodo de Pago            |   1.03985  |     1     |   1     |
+| Navegador                 |   0.882308 |     0     |   0     |
+| Boletin                   |   0.449385 |     0     |   0     |
+| Vale                      |   0.192923 |     0     |   0     |
 
 ## Analisis de Tendencias
 - Mes de Mayores Ventas: Mes 3.0 con monto de 22994.336
