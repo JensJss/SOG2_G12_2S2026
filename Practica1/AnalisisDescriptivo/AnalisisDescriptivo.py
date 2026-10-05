@@ -27,8 +27,8 @@ def EjecutarAnalisisDescriptivo():
     
     DfCompleto = pd.merge(DfCompras, DfClientes, on="id_cliente", how="inner")
     
-    VariablesNumericasClientes = ["edad", "venta_total", "n_compras"]
-    VariablesNumericasCompras = ["monto_compra", "tiempo_sitio"]
+    VariablesNumericasClientes = ["edad", "id_genero", "venta_total", "n_compras"]
+    VariablesNumericasCompras = ["monto_compra", "id_metodo_pago", "tiempo_sitio", "id_navegador", "boletin", "vale"]
     
     ResultadosEstadisticas = []
     
@@ -127,7 +127,15 @@ def EjecutarAnalisisDescriptivo():
         Archivo.write("Se nota que los jovenes (19-35) y adultos (36-50) concentran el mayor volumen de compras, con poca diferencia entre generos.\n\n")
         
         Archivo.write("## Estadisticas Basicas\n")
-        Archivo.write(DfEstadisticas.to_markdown(index=False))
+        NombresMd = {'edad': 'Edad', 'venta_total': 'Venta total (Q)', 'n_compras': 'Numero de compras', 'monto_compra': 'Monto de compra (Q)', 'tiempo_sitio': 'Tiempo en el sitio (seg.)', 'id_genero': 'Genero', 'id_metodo_pago': 'Metodo de Pago', 'id_navegador': 'Navegador', 'boletin': 'Boletin', 'vale': 'Vale'}
+        OrdenMd = ['Edad', 'Venta total (Q)', 'Numero de compras', 'Monto de compra (Q)', 'Tiempo en el sitio (seg.)', 'Genero', 'Metodo de Pago', 'Navegador', 'Boletin', 'Vale']
+        
+        DfExportar = DfEstadisticas.copy()
+        DfExportar['Variable'] = DfExportar['Variable'].map(NombresMd)
+        DfExportar['Variable'] = pd.Categorical(DfExportar['Variable'], categories=OrdenMd, ordered=True)
+        DfExportar = DfExportar.sort_values('Variable')
+        
+        Archivo.write(DfExportar.to_markdown(index=False))
         
         Archivo.write("\n\n## Analisis de Tendencias\n")
         Archivo.write(f"- Mes de Mayores Ventas: Mes {MesMayorVentas['mes_compra']} con monto de {MesMayorVentas['monto_compra']}\n")

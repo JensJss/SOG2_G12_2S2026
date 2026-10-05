@@ -34,4 +34,4 @@
 
 ## Practicas
 
-- **Practica 1 — **
+- **Practica 1 —** [`Practica1/`](Practica1/README.md)

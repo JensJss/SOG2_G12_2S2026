@@ -5,3 +5,5 @@ psycopg2-binary
 matplotlib
 seaborn
 pandas
+fastapi
+uvicorn[standard]

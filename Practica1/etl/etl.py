@@ -31,7 +31,7 @@ from sqlalchemy.engine import Engine
 # Ruta por defecto del CSV: mismo directorio donde vive este archivo etl.py
 # ---------------------------------------------------------------------------
 DIRECTORIO_SCRIPT = os.path.dirname(os.path.abspath(__file__))
-CSV_POR_DEFECTO = os.path.join(DIRECTORIO_SCRIPT, "Venta_online_c.csv")
+CSV_POR_DEFECTO = os.path.join(DIRECTORIO_SCRIPT, "Venta_Prueba.csv")
 
 # ---------------------------------------------------------------------------
 # Configuracion de logging

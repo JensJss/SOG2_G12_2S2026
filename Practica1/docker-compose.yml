@@ -1,37 +1,37 @@
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: compras-postgres
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    ports:
-      - "${DB_PORT}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # Base de datos local desactivada: se usa la instancia AWS RDS definida en .env
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: compras-postgres
+  #   environment:
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     POSTGRES_DB: ${DB_NAME}
+  #   ports:
+  #     - "${DB_PORT}:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
   ia-agent:
     build:
       context: ./servidor
       dockerfile: Dockerfile
     container_name: servidor-ia-mcp
+    ports:
+      - "8000:8000"
     volumes:
       - ./servidor:/app
+      - ./graficacion:/graficacion:ro
     env_file:
       - .env
-    depends_on:
-      postgres:
-        condition: service_healthy
     stdin_open: true
     tty: true
 
-volumes:
-  postgres_data:
-
+# volumes:
+#   postgres_data:
