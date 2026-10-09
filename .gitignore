@@ -95,6 +95,7 @@ logs/
 # Misc
 temp/
 tmp/
+Proyecto1/temp/
 
 #Other
 distribucion.md
