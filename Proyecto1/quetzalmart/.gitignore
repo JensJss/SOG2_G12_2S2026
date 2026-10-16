@@ -1,0 +1,11 @@
+# Secretos y datos locales
+.env
+backups/
+*.dump
+*.filestore.tgz
+# PDFs generados (se regeneran con el seed / export_invoices.py)
+facturas_pdf/*
+!facturas_pdf/.gitkeep
+# Python
+__pycache__/
+*.pyc

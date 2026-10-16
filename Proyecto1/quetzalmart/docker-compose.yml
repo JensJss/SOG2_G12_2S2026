@@ -1,0 +1,144 @@
+# =============================================================================
+#  QuetzalMart - ERP Odoo 18 Community + PostgreSQL 16 (misma VM)
+#  Proyecto Sistemas Organizacionales y Gerenciales 2 - USAC 2S2026
+#
+#  Mismo archivo para la PC local y la EC2: solo cambia el archivo .env
+#    Local : cp .env.example .env          -> Odoo en http://localhost:18069
+#    EC2   : cp .env.ec2.example .env      -> Odoo en http://IP_PUBLICA (nginx:80)
+#
+#  Perfiles opcionales (no arrancan con un "up" normal):
+#    --profile seed   -> crea la BD y carga los datos del Integrante 3
+#    --profile proxy  -> nginx en el puerto 80 (EC2)
+#    --profile dev    -> mailpit para probar correos sin enviarlos de verdad
+#    --profile tools  -> Adminer (cliente SQL web) para las consultas
+# =============================================================================
+name: quetzalmart
+
+services:
+
+  # ---------------------------------------------------------------- PostgreSQL
+  db:
+    image: postgres:16
+    container_name: quetzalmart-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en el archivo .env}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: America/Guatemala
+    volumes:
+      - qm-db-data:/var/lib/postgresql/data
+      - ./sql:/sql:ro
+    # Por defecto SOLO escucha en 127.0.0.1 (no queda expuesto a internet).
+    # En la PC local: 15432 (tu 5432 ya está ocupado por postgres_db).
+    ports:
+      - "${PG_BIND:-127.0.0.1}:${PG_PORT:-15432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks: [qm-net]
+
+  # ---------------------------------------------------------------- Odoo 18
+  odoo:
+    image: odoo:18.0
+    container_name: quetzalmart-odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    # El script genera odoo.conf a partir de las variables de .env
+    entrypoint: ["/bin/bash", "/opt/quetzalmart/start-odoo.sh"]
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-odoo}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      ODOO_DB: ${ODOO_DB:-quetzalmart}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?Define ODOO_MASTER_PASSWORD en el archivo .env}
+      ODOO_LIST_DB: ${ODOO_LIST_DB:-True}
+      ODOO_PROXY_MODE: ${ODOO_PROXY_MODE:-False}
+      TZ: America/Guatemala
+    volumes:
+      - qm-odoo-data:/var/lib/odoo                      # filestore (adjuntos, imágenes, PDFs)
+      - ./addons:/mnt/extra-addons:ro                   # módulos extra (OCA dms)
+      - ./config/start-odoo.sh:/opt/quetzalmart/start-odoo.sh:ro
+    ports:
+      - "${ODOO_BIND:-0.0.0.0}:${ODOO_PORT:-18069}:8069"
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request;urllib.request.urlopen('http://localhost:8069/web/health',timeout=5)\""]
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 40s
+    networks: [qm-net]
+
+  # ---------------------------------------------------------------- Carga de datos (Integrante 3)
+  # docker compose --profile seed run --rm seed
+  seed:
+    image: odoo:18.0
+    profiles: ["seed"]
+    depends_on:
+      odoo:
+        condition: service_healthy
+    entrypoint: ["python3", "-u", "/seed/seed.py"]
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      HOME: /tmp
+      ODOO_URL: http://odoo:8069
+      ODOO_DB: ${ODOO_DB:-quetzalmart}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD}
+      ODOO_ADMIN_LOGIN: ${ODOO_ADMIN_LOGIN:-admin}
+      ODOO_ADMIN_PASSWORD: ${ODOO_ADMIN_PASSWORD:?Define ODOO_ADMIN_PASSWORD en el archivo .env}
+      ODOO_PUBLIC_URL: ${ODOO_PUBLIC_URL:-http://localhost:18069}
+      PDF_OUT: /out
+    volumes:
+      - ./seed:/seed:ro
+      - ./facturas_pdf:/out
+    networks: [qm-net]
+
+  # ---------------------------------------------------------------- nginx (EC2, puerto 80)
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: quetzalmart-nginx
+    profiles: ["proxy"]
+    restart: unless-stopped
+    depends_on:
+      - odoo
+    volumes:
+      - ./nginx/odoo.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    networks: [qm-net]
+
+  # ---------------------------------------------------------------- Mailpit (solo pruebas)
+  mailpit:
+    image: axllent/mailpit
+    container_name: quetzalmart-mail
+    profiles: ["dev"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MAILPIT_UI_PORT:-18025}:8025"    # UI web; Odoo envía a mailpit:1025 por la red interna
+    networks: [qm-net]
+
+  # ---------------------------------------------------------------- Adminer (cliente SQL web)
+  adminer:
+    image: adminer:4
+    container_name: quetzalmart-adminer
+    profiles: ["tools"]
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      - "${ADMINER_BIND:-127.0.0.1}:${ADMINER_PORT:-18081}:8080"
+    networks: [qm-net]
+
+volumes:
+  qm-db-data:
+  qm-odoo-data:
+
+networks:
+  qm-net:
+    name: quetzalmart-net

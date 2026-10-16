@@ -17,6 +17,7 @@ QuetzalMart es una cadena de tiendas en expansión (con sucursales en Guatemala,
 - [/manuales/](./manuales/) - Documentación técnica y manuales de usuario de cada módulo (Ventas, CRM, Compras, RPA).
 - `/Enunciado/` - Documentación oficial y rúbrica del proyecto.
 - `/Distribucion/` - Archivos de organización interna del equipo.
+- [/quetzalmart/](./quetzalmart/README.md) - Infraestructura Docker (Odoo 18 + PostgreSQL 16 + nginx) para la EC2, carga de datos del ERP (empleados, compras, materiales, facturas), consultas SQL de la calificación y guías de despliegue.
 
 ## Tecnologías Utilizadas
 
